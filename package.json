@@ -15,6 +15,7 @@
     "@strapi/provider-upload-cloudinary": "^4.12.1",
     "@strapi/strapi": "4.12.1",
     "pg": "8.8.0",
+    "strapi": "^3.6.11",
     "stripe": "^12.17.0"
   },
   "author": {
@@ -27,5 +28,8 @@
     "node": ">=16.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "react-scripts": "^5.0.1"
+  }
 }
