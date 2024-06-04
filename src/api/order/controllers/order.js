@@ -1,8 +1,12 @@
 ("use strict");
 
 
-// @ts-ignore
-const stripe = require('stripe')(process.env.STRIPE_KEY);
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_KEY, {
+    apiVersion: '2022-11-15',
+});
+
+
 
 const {createCoreController} = require("@strapi/strapi").factories;
 
