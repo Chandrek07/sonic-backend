@@ -1,6 +1,5 @@
 ("use strict");
 
-
 // @ts-ignore
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
@@ -15,6 +14,10 @@ module.exports = createCoreController("api::order.order", ({strapi}) => ({
                     const item = await strapi
                         .service("api::product.product")
                         .findOne(product.id);
+
+                    if(!item) {
+                        throw new Error(`Product with ID ${product.id} not found`);
+                    }
 
                     return {
                         price_data: {
@@ -33,19 +36,20 @@ module.exports = createCoreController("api::order.order", ({strapi}) => ({
                 shipping_address_collection: {allowed_countries: ["IN"]},
                 payment_method_types: ["card"],
                 mode: "payment",
-                success_url: process.env.CLIENT_URL + "/success",
-                cancel_url: process.env.CLIENT_URL + "/failed",
+                success_url: `${process.env.CLIENT_URL}/success`,
+                cancel_url: `${process.env.CLIENT_URL}/failed`,
                 line_items: lineItems,
             });
 
-            await strapi
-                .service("api::order.order")
-                .create({data: {products, stripeId: session.id}});
+            await strapi.service("api::order.order").create({
+                data: {products, stripeId: session.id},
+            });
 
             return {stripeSession: session};
         } catch(error) {
+            console.error("Error creating Stripe Checkout session:", error);
             ctx.response.status = 500;
-            return {error};
+            return {error: error.message};
         }
     },
 }));
